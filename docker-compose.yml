@@ -6,8 +6,7 @@ services:
       - "80:80"
     volumes:
       - ./project/html:/var/www/html
-      - ./project/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./project/nginx/conf/conf.d:/etc/nginx/conf.d
+      - ./project/nginx/conf:/etc/nginx
       
   php:
     image: php:7.0-fpm
