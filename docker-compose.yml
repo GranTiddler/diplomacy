@@ -4,14 +4,34 @@ services:
     image: nginx
     ports:
       - "80:80"
+    restart: always
     volumes:
       - ./project/html:/var/www/html
       - ./project/nginx/conf:/etc/nginx
       
   php:
-    image: php:7.0-fpm
+    build: ./project/php
     container_name: php-container
+    restart: always
     expose:
       - 9000 
+
+  database:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
     volumes:
-      - ./project/html:/var/www/html
+      - db-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+  
+volumes:
+  db-data:
+    name: "mysql-database"
