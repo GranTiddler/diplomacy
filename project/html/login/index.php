@@ -3,13 +3,13 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Sign up</title>
+	<title>Log in</title>
 </head>
 
 <body>
 	<div class="login">
-		<h1>Sign up</h1>
-		<form action="/scripts/signup-script.php" method="post">
+		<h1>Login</h1>
+		<form action="/scripts/authenticate-script.php" method="post">
 			<label for="username">
 				<i class="fas fa-user"></i>
 			</label>
@@ -20,7 +20,7 @@
 			<label for="checkbox">remember my login </label>
 			<input type="checkbox" name="remember">
 			<br>
-			<input type="submit" name="submit" value="submit">
+			<input type="submit" name="submit" value="Login">
 		</form>
 	</div>
 </body>

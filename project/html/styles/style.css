@@ -1,0 +1,23 @@
+body, html {
+    margin: 0px;
+    padding: 0px;
+  }
+
+.nav {
+    background-color: #333;
+    overflow: hidden;
+    color: white;
+    padding: 0 10;
+}
+
+.nav .login-button {
+    float: right;
+
+    padding: 5px 5px;
+    margin: 15px;
+}
+
+.nav-element {
+    float: left;
+    padding: 20px;
+}

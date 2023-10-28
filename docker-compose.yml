@@ -13,6 +13,8 @@ services:
     build: ./project/php
     container_name: php-container
     restart: always
+    volumes:
+      - ./project/html:/var/www/html
     expose:
       - 9000 
 
