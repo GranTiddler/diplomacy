@@ -11,13 +11,16 @@ include_once("scripts/verify-script.php");
     <div class="nav">
         <a class="nav-element">B A L L S</a>
 
-        <button class="login-button">
-            log in
-        </button>
 
-        <button class="login-button">
-            sign up
-        </button>
+        <?php
+        if (isset($_SESSION["username"])) {
+            echo '<a class="login-button">' . $_SESSION["username"] . '</a>';
+        } else {
+            echo '<a class="login-button" href="/login">log in</a><a class="login-button" href="/signup">sign up</a>';
+        }
+        ?>
+
+
     </div>
 </body>
 

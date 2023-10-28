@@ -19,10 +19,12 @@ if (isset($_POST["submit"])) {
 
     if($_POST["remember"])
     {
-        echo"remember";
+        setCookies($conn);
     }
 
     
 } else {
     // echo "stink";
 }
+
+header("location: /");

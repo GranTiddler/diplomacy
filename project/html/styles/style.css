@@ -12,10 +12,22 @@ body, html {
 
 .nav .login-button {
     float: right;
+    color: white;
+    text-decoration: none;
+    
 
-    padding: 5px 5px;
-    margin: 15px;
+    padding: 20px 15px;
 }
+
+
+.nav .login-button:hover {
+    background-color: #555;
+
+    padding: 20px 15px;
+
+}
+
+
 
 .nav-element {
     float: left;
