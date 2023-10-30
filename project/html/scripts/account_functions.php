@@ -71,10 +71,7 @@ function setCookies($conn)
         setcookie("login", $cookieVal, time() + (86400 * 30), "/");
 
 
-    } else {
-        echo "not logged in";
     }
-
 
 }
 function verifyCookies($conn)
@@ -83,17 +80,58 @@ function verifyCookies($conn)
 
     if (isset($_COOKIE["login"])) {
         $cookieVal = explode(" - ", $_COOKIE["login"]);
-        
+
         $userID = $cookieVal[0];
         $hashedPWD = $cookieVal[1];
-        
-        
+
+        setCookies($conn);
+
         $result = mysqli_query($conn, "SELECT * FROM `users` WHERE usersID = '" . $userID . "';");
         $row = mysqli_fetch_row($result);
-        
+
         if ($hashedPWD == $row[2]) {
             startSession($conn, $userID);
         }
 
+    }
+}
+
+
+function removeCookie($conn)
+{
+
+    if (isset($_COOKIE["login"])) {
+        setcookie("login", $_COOKIE["login"], time() - 10, "/");
+
+
+    }
+}
+
+function changeUsername($conn, $userID, $newUsername)
+{
+    if (isset($_COOKIE["login"])) {
+        if ($_SESSION["uid"] == $userID) {
+
+            $sql = "UPDATE users SET usersNAME='" . $newUsername . "' WHERE id='" . $userID . "'";
+            if (mysqli_query($conn, $sql)){
+                
+            }
+
+        }
+    }
+}
+
+function changePassword($conn, $userID, $oldPassword, $newPassword)
+{
+    $result = mysqli_query($conn, "SELECT * FROM `users` WHERE usersID = '" . $userID . "';");
+    $row = mysqli_fetch_row($result);
+
+    if (password_verify($oldPassword, $row[2])){
+        $hashPWD = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        $sql = "UPDATE users SET usersPWD='" . $hashPWD . "' WHERE id='" . $userID . "'";
+        if (mysqli_query($conn, $sql)){
+                
+        }
     }
 }
