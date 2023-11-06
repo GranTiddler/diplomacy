@@ -8,7 +8,7 @@ services:
     volumes:
       - ./project/html:/var/www/html
       - ./project/nginx/conf:/etc/nginx
-      
+
   php:
     build: ./project/php
     container_name: php-container
@@ -16,7 +16,7 @@ services:
     volumes:
       - ./project/html:/var/www/html
     expose:
-      - 9000 
+      - 9000
 
   database:
     image: mysql
@@ -33,7 +33,7 @@ services:
       - 8080:80
     environment:
       - PMA_ARBITRARY=1
-  
+
 volumes:
   db-data:
     name: "mysql-database"

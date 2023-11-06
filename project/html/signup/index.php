@@ -9,7 +9,7 @@
 <body>
 	<div class="login">
 		<h1>Sign up</h1>
-		<form action="/scripts/signup-script.php" method="post">
+		<form action="/scripts/php/signup-script.php" method="post">
 			<label for="username">
 				<i class="fas fa-user"></i>
 			</label>

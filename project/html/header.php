@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("scripts/verify-script.php");
+include_once("scripts/php/verify-script.php");
 
 ?>
 
