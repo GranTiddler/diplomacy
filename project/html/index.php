@@ -3,9 +3,9 @@
 ?>
 
 <html>
+
+
 <script src='/scripts/javascript/get_moves.js'></script>
-
-
 
 <style type="text/css">
     .box {
@@ -39,59 +39,9 @@
 
 <a id="move_display"></a>
 
-<script type="module">
+<script>
 
-
-    const json = await fetch("/map.json")
-        .then((res) => {
-            return res.json();
-        });
-
-    var map_json = json["map"]
-
-
-    var mapElement = document.getElementById('map');
-
-
-
-    for (var key in map_json) {
-
-        var el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        el.setAttribute('class', 'territory')
-        el.setAttribute('fill', '#000000')
-        el.setAttribute('stroke', '#000000')
-        el.setAttribute('d', map_json[key]['d'])
-        el.setAttribute('stroke-width', '0')
-        el.setAttribute('transform', 'matrix(1,0,0,1,0,0)')
-        el.setAttribute('id', key)
-
-        if (map_json[key]["coasts"]) {
-            coastTerritories.push(el);
-
-            for (var coast in map_json[key]['coasts']) {
-
-                var coastButton = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-                coastButton.setAttribute('class', 'territory')
-                coastButton.setAttribute('fill', '#000000')
-                coastButton.setAttribute('stroke', '#000000')
-                coastButton.setAttribute('d', map_json[key]["coasts"][coast]['d'])
-                coastButton.setAttribute('stroke-width', '0')
-                coastButton.setAttribute('transform', 'matrix(1,0,0,1,0,0)')
-                coastButton.setAttribute('id', key + coast)
-                mapElement.appendChild(coastButton)
-            }
-        }
-
-        mapElement.appendChild(el)
-    }
-
-
-
-    var path = document.querySelectorAll('.territory');
-
-    for (var i = 0; i < path.length; i++) {
-        path[i].addEventListener('click', function () { territoryClick(this.id) }, false);
-    }
+    createButtons()
 </script>
 
 </html>
