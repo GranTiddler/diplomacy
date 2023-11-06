@@ -135,7 +135,6 @@ function setCoastVisibility() {
     }
 }
 
-
 async function createButtons() {
 
     const json = await fetch("/map.json")
@@ -147,7 +146,7 @@ async function createButtons() {
 
 
 
-    var mapElement = document.getElementById('map');
+    var mapElement = document.getElementById('buttonLayer');
 
 
 
@@ -191,6 +190,19 @@ async function createButtons() {
 
 }
 
+async function createGraphics() {
+
+}
+
+async function drawCommand()
+{
+
+}
+
+async function drawUnit(territory, Type)
+{
+
+}
 
 document.addEventListener('keydown', (event) => {
     var name = event.key;
