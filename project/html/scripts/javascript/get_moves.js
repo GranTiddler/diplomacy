@@ -1,6 +1,6 @@
 var moves = {};
 
-var units = { "Rom": "A", "Nap": "F", "Bul": "F" };
+var units = { "Rom": {"type":"A"}, "Nap": {"type":"F"}, "Bul": {"type":"F"} };
 
 var showCoasts = true;
 var coastTerritories = [];
@@ -54,7 +54,7 @@ function territoryClick(id) {
 
             }
             else {
-                if (selected == id || !units[id]) { //if unit is trying to support itself
+                if (selected == id || !units[id]) { //if unit is trying to support itself or there is no unit
                     return;
                 }
                 window.target = id;
@@ -125,7 +125,7 @@ function updateDisplay() {
 
 function setCoastVisibility() {
     for (var ter in coastTerritories) {
-        if (!isSelected || (targetSelected && (coastTerritories[ter].id == target || units[target] == "A")) || (!targetSelected && (action != "m" || units[selected] == "A" || coastTerritories[ter].id == selected))) {
+        if (!isSelected || (targetSelected && (coastTerritories[ter].id == target || units[target]["type"] == "A")) || (!targetSelected && (action != "m" || units[selected]["type"] == "A" || coastTerritories[ter].id == selected))) {
             coastTerritories[ter].style.display = "block";
         }
         else {
