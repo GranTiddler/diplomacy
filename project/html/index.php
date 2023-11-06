@@ -42,10 +42,12 @@
 <script type="module">
 
 
-    const map_json = await fetch("/map.json")
+    const json = await fetch("/map.json")
         .then((res) => {
             return res.json();
         });
+
+    var map_json = json["map"]
 
 
     var mapElement = document.getElementById('map');
@@ -75,7 +77,7 @@
                 coastButton.setAttribute('d', map_json[key]["coasts"][coast]['d'])
                 coastButton.setAttribute('stroke-width', '0')
                 coastButton.setAttribute('transform', 'matrix(1,0,0,1,0,0)')
-                coastButton.setAttribute('id', key+coast)
+                coastButton.setAttribute('id', key + coast)
                 mapElement.appendChild(coastButton)
             }
         }
@@ -97,7 +99,12 @@
 <!-- path code: 
 
 
- var v = (F.x + B.x) / 2, R = (F.y + B.y) / 2, b = (3 *
-                                F.x + B.x) / 4, k = (3 * F.y + B.y) / 4, n = (F.x + 3 * B.x) / 4; f = (F.y + 3 * B.y) / 4; if (B.x > F.x) { var m = .05 * (B.y - F.y); F = .05 * (F.x - B.x) } else m = .05 * (F.y - B.y), F = .05 * (B.x - F.x); h = ["M", h.x, ",", h.y, "C", v, ",", R, " ", b + m, ",", k + F, " ", n, ",", f].join(""); v = A.set(); v.push(A.path(h).attr({ "stroke-dasharray": ".", "stroke-width": "2", stroke: t }).scaleToCanvas()); v.push(A.circle(n, f, 5).attr({ stroke: t }).scaleToCanvas()); t = v
+var v = (F.x + B.x) / 2, R = (F.y + B.y) / 2, b = (3 * F.x + B.x) / 4, k = (3 * F.y + B.y) / 4, n = (F.x + 3 * B.x) / 4; 
+f = (F.y + 3 * B.y) / 4; if (B.x > F.x) { var m = .05 * (B.y - F.y); F = .05 * (F.x - B.x) } else m = .05 * (F.y - B.y), F = .05 * (B.x - F.x); 
+h = ["M", h.x, ",", h.y, "C", v, ",", R, " ", b + m, ",", k + F, " ", n, ",", f].join(""); 
+v = A.set(); 
+v.push(A.path(h).attr({ "stroke-dasharray": ".", "stroke-width": "2", stroke: t }).scaleToCanvas()); 
+v.push(A.circle(n, f, 5).attr({ stroke: t }).scaleToCanvas()); 
+t = v
 
 -->
