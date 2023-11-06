@@ -41,7 +41,6 @@
 
 <script>
 
-    createButtons()
 </script>
 
 </html>

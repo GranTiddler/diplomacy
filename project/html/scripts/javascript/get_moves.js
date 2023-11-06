@@ -203,3 +203,5 @@ document.addEventListener('keydown', (event) => {
         setAction("m");
     }
 }, false);
+
+createButtons()
