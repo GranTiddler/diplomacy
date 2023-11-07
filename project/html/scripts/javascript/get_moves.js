@@ -135,7 +135,7 @@ function setCoastVisibility() {
     }
 }
 
-async function createButtons() {
+async function createButtons(j) {
 
     const json = await fetch("/map.json")
         .then((res) => {
@@ -143,6 +143,7 @@ async function createButtons() {
         });
 
     map_json = json["map"]
+    console.log(j)
 
 
 
@@ -173,7 +174,7 @@ async function createButtons() {
                 coastButton.setAttribute('d', map_json[key]["coasts"][coast]['d'])
                 coastButton.setAttribute('stroke-width', '0')
                 coastButton.setAttribute('transform', 'matrix(1,0,0,1,0,0)')
-                coastButton.setAttribute('id', key + coast)
+                coastButton.setAttribute('id', key + "/" + coast)
                 mapElement.appendChild(coastButton)
             }
         }
@@ -191,17 +192,75 @@ async function createButtons() {
 }
 
 async function createGraphics() {
+    const json = await fetch("/map.json")
+        .then((res) => {
+            return res.json();
+        });
+
+    map_json = json["map"]
+    game = json["game"]
+
+    var mapElement = document.getElementById('mapLayer');
+
+    for (var key in map_json) {
+
+        var el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+
+        if (map_json[key]["sc"]) {
+            if (map_json[key]["sc"]["country"]) {
+                el.setAttribute('fill', game["countries"][map_json[key]["sc"]["country"]]["color"])
+                el.setAttribute('fill-opacity', '0.3')
+            
+            }
+            else{
+                el.setAttribute('fill', '#fff')
+                el.setAttribute('fill-opacity', '0.3')   
+            }
+        }
+        
+        else {
+            el.setAttribute('fill', '#000000')
+            el.setAttribute('fill-opacity', '0')
+            
+        }
+
+        if (map_json[key]["unit"]) {
+
+            if(map_json[key]["unit"]["coast"])
+            {
+                drawUnit(key, map_json[key]["unit"]["type"], map_json[key]["unit"]["country"], map_json[key]["unit"]["coast"])
+            }
+            else{
+                drawUnit(key, map_json[key]["unit"]["type"], map_json[key]["unit"]["country"], false)
+
+            }
+        }
+
+        el.setAttribute('stroke', '#fff')
+        el.setAttribute('d', map_json[key]['d'])
+        el.setAttribute('stroke-width', '1')
+        el.setAttribute('transform', 'matrix(1,0,0,1,0,0)')
+        el.setAttribute('id', key)
+
+        mapElement.appendChild(el)
+    }
+}
+
+async function drawCommand() {
 
 }
 
-async function drawCommand()
-{
+async function drawUnit(territory, Type, country, coast) {
 
-}
 
-async function drawUnit(territory, Type)
-{
-
+    if(coast)
+    {
+        console.log(territory+"/"+coast)
+    }
+    else{
+        console.log(territory)
+        
+    }
 }
 
 document.addEventListener('keydown', (event) => {
@@ -216,4 +275,7 @@ document.addEventListener('keydown', (event) => {
     }
 }, false);
 
+
+
 createButtons()
+createGraphics();
