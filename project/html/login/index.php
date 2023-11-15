@@ -9,7 +9,7 @@
 <body>
 	<div class="login">
 		<h1>Login</h1>
-		<form action="/scripts/php/authenticate-script.php" method="post">
+		<form action="/scripts/server/authenticate-script.php" method="post">
 			<label for="username">
 				<i class="fas fa-user"></i>
 			</label>
