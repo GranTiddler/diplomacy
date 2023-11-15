@@ -3,7 +3,7 @@ var moves = {};
 
 
 var units = { "Con": { "type": "A" }, "Ank": { "type": "F" }, "Smy": { "type": "A" }, "Kie": { "type": "A" }, "Mun": { "type": "A" }, "Mos": { "type": "A" }, "Ukr": { "type": "A" }, "Sev": { "type": "F" }, "Stp": { "type": "F", "coast": "SC" } };
-var controlledUnits = {"Con": { "type": "A" }, "Ank": { "type": "F" }, "Smy": { "type": "A" }}
+var controlledUnits = { "Con": { "type": "A" }, "Ank": { "type": "F" }, "Smy": { "type": "A" } }
 
 var showCoasts = true;
 var coastTerritories = [];
