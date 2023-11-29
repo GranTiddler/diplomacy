@@ -1,15 +1,18 @@
-var moves = {};
 
 
+// moves = {"Ank":{"action":"M","move":"Tun"},"Ven":{"action":"M","move":"Ukr"}}
 
-var units = { "Con": { "type": "A" }, "Ank": { "type": "F" }, "Smy": { "type": "A" }, "Kie": { "type": "A" }, "Mun": { "type": "A" }, "Mos": { "type": "A" }, "Ukr": { "type": "A" }, "Sev": { "type": "F" }, "Stp": { "type": "F", "coast": "SC" } };
-var controlledUnits = { "Con": { "type": "A" }, "Ank": { "type": "F" }, "Smy": { "type": "A" } }
 
 var showCoasts = true;
+
 var coastTerritories = [];
 
+var centerOwners = {};
+var moves = {};
+var units = {};
+
 var isSelected = false;
-var action = "m";
+var action = "M";
 var selected;
 var target;
 var targetSelected = false;
@@ -18,15 +21,17 @@ var target2;
 var json;
 
 
+
+
 function territoryClick(id) {
     if (isSelected) {
 
         // move actions
-        if (action == "m") {
+        if (action == "M") {
 
             // hold
             if (id == selected) {
-                window.moves[selected] = { "action": "h" };
+                window.moves[selected] = { "action": "H" };
                 updateDisplay()
 
 
@@ -54,12 +59,12 @@ function territoryClick(id) {
 
 
 
-                window.action = "m";
+                window.action = "M";
                 window.isSelected = false;
 
             }
             else {
-                if (selected == id || !units[id]) { //if unit is trying to support itself or there is no unit
+                if (selected == id || !units[id]) { 
                     return;
                 }
                 window.target = id;
@@ -68,8 +73,8 @@ function territoryClick(id) {
             }
         }
     }
-    else if (controlledUnits[id]) {
-        action = "m";
+    else if (units[id]["country"] == country) {
+        action = "M";
         window.isSelected = true;
         window.selected = id;
 
@@ -81,8 +86,8 @@ function territoryClick(id) {
 function setAction(action) {
 
     if (isSelected) {
-        if (action === "h") {
-            window.moves[selected] = { "action": "h" };
+        if (action == "H") {
+            window.moves[selected] = { "action": "H" };
             updateDisplay()
 
             window.isSelected = false;
@@ -94,7 +99,7 @@ function setAction(action) {
 
     }
     else {
-        if (action !== "h") {
+        if (action != "H") {
             window.action = action;
         }
     }
@@ -109,15 +114,15 @@ function updateDisplay() {
     for (var key in moves) {
         inner += key
 
-        if (moves[key]["action"] != "h") {
-            if (moves[key]["action"] == 'm') {
+        if (moves[key]["action"] != "H") {
+            if (moves[key]["action"] == 'M') {
                 inner += " - "
                 inner += moves[key]["move"]
 
             }
             else {
                 if (moves[key]["move"][0] == moves[key]["move"][1]) {
-                    inner += " " + moves[key]["action"] + " " + moves[key]["move"][0] + " h"
+                    inner += " " + moves[key]["action"] + " " + moves[key]["move"][0] + " H"
                 }
                 else {
                     inner += " " + moves[key]["action"] + " " + moves[key]["move"][0] + " - " + moves[key]["move"][1]
@@ -125,7 +130,7 @@ function updateDisplay() {
             }
         }
         else {
-            inner += " h"
+            inner += " H"
         }
         inner += "<br>"
     }
@@ -134,7 +139,7 @@ function updateDisplay() {
 
 function setCoastVisibility() {
     for (var ter in coastTerritories) {
-        if (!isSelected || (targetSelected && (coastTerritories[ter].id == target || units[target]["type"] == "A")) || (!targetSelected && (action != "m" || units[selected]["type"] == "A" || coastTerritories[ter].id == selected))) {
+        if (!isSelected || (targetSelected && (coastTerritories[ter].id == target || units[target]["type"] == "A")) || (!targetSelected && (action != "M" || units[selected]["type"] == "A" || coastTerritories[ter].id == selected))) {
             coastTerritories[ter].style.display = "block";
         }
         else {
@@ -212,8 +217,8 @@ function createGraphics(json) {
         var el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
         if (map_json[key]["sc"]) {
-            if (map_json[key]["sc"]["country"]) {
-                el.setAttribute('fill', game["countries"][map_json[key]["sc"]["country"]]["color"])
+            if (centerOwners[key]) {
+                el.setAttribute('fill', game["countries"][centerOwners[key]]["color"])
                 el.setAttribute('fill-opacity', '0.3')
 
             }
@@ -231,13 +236,14 @@ function createGraphics(json) {
 
 
 
-        if (map_json[key]["unit"]) {
+        if (units[key]) {
 
-            if (map_json[key]["unit"]["coast"]) {
-                drawUnit(json, key, map_json[key]["unit"]["type"], map_json[key]["unit"]["country"], map_json[key]["unit"]["coast"])
+            if (units[key]["coast"]) {
+                console.log(units[key])
+                drawUnit(json, key, units[key]["type"], units[key]["country"], units[key]["coast"])
             }
             else {
-                drawUnit(json, key, map_json[key]["unit"]["type"], map_json[key]["unit"]["country"], false)
+                drawUnit(json, key, units[key]["type"], units[key]["country"], false)
 
             }
         }
@@ -318,8 +324,8 @@ function createGraphics(json) {
 
             }
 
-            if (map_json[key]["sc"]["country"]) {
-                el.setAttribute('fill', game["countries"][map_json[key]["sc"]["country"]]["color"])
+            if (centerOwners[key]) {
+                el.setAttribute('fill', game["countries"][centerOwners[key]]["color"])
                 el.setAttribute('fill-opacity', '1')
 
 
@@ -377,7 +383,7 @@ function drawMove(json, territory, target, c1, c2) {
     el.setAttribute('d', "M" + p1[0] + "," + p1[1] + "L" + p2[0] + "," + p2[1] + "Z")
 
     el.setAttribute('stroke', '#000')
-    el.setAttribute('stroke-width', '3')
+    el.setAttribute('stroke-width', '2')
 
     var units = document.getElementById('orders');
     units.appendChild(el)
@@ -392,15 +398,13 @@ function drawMove(json, territory, target, c1, c2) {
     el.setAttribute('d', "M" + (p2[0] + arrow1[0]) + "," + (p2[1] + arrow1[1]) + "L" + p2[0] + "," + p2[1] + "L" + (p2[0] + arrow2[0]) + "," + (p2[1] + arrow2[1]))
 
     el.setAttribute('stroke', '#000')
-    el.setAttribute('stroke-width', '3')
+    el.setAttribute('stroke-width', '2')
     el.setAttribute('fill-opacity', "0")
 
     var units = document.getElementById('orders');
     units.appendChild(el)
 
 }
-
-
 
 function drawHold(json, territory, coast = false) {
 
@@ -449,7 +453,6 @@ function drawConvoy(json, territory) {
     units.appendChild(el)
 
 }
-
 
 function lerp(a, b, c) {
     return [a[0] * c + b[0] * (1 - c), a[1] * c + b[1] * (1 - c)]
@@ -533,7 +536,7 @@ function drawSupport(json, territory, target, targettarget, c1 = false, c2 = fal
     el.setAttribute('stroke-dasharray', '2 2')
 
 
-    el.setAttribute('stroke-width', '3')
+    el.setAttribute('stroke-width', '2.5')
 
     var units = document.getElementById('orders');
     units.appendChild(el)
@@ -556,7 +559,7 @@ function drawSupport(json, territory, target, targettarget, c1 = false, c2 = fal
         el.setAttribute('fill-opacity', '0')
 
 
-        el.setAttribute('stroke-width', '3')
+        el.setAttribute('stroke-width', '2.5')
 
         units.appendChild(el)
 
@@ -596,6 +599,9 @@ function drawUnit(json, territory, Type, country, coast, build = false) {
 
     }
     else {
+        // console.log(json["game"]["countries"]);
+        // console.log(country);
+        // console.log(territory)
         el.setAttribute('stroke', json["game"]["countries"][country]["color"])
         el.setAttribute('fill', json["game"]["countries"][country]["color"])
         el.setAttribute('fill-opacity', 0.6)
@@ -616,7 +622,6 @@ function drawUnit(json, territory, Type, country, coast, build = false) {
 
 }
 
-
 function drawOrders(json, moves) {
     document.getElementById('orders').innerHTML = "";
 
@@ -629,7 +634,7 @@ function drawOrders(json, moves) {
 
 
         switch (moves[key]["action"]) {
-            case "m":
+            case "M":
                 var m = moves[key]["move"].substring(0, 3)
 
                 if (moves[key]["move"].charAt(3)) {
@@ -637,13 +642,13 @@ function drawOrders(json, moves) {
                 }
                 drawMove(json, key, m, units[key]["coast"], c1)
                 break;
-            case "h":
+            case "H":
                 drawHold(json, key, units[key]["coast"])
                 break;
-            case "c":
+            case "C":
                 drawConvoy(json, key)
                 break;
-            case "s":
+            case "S":
 
                 var m1 = moves[key]["move"][0].substring(0, 3)
                 var m2 = moves[key]["move"][1].substring(0, 3)
@@ -671,16 +676,25 @@ function drawOrders(json, moves) {
     }
 }
 
+function getBoard(year, season)
+{
+    
+    moves = board[year][season]["M"]
+    if(moves == []){moves={}}
+    units = board[year][season]["U"]
+    centerOwners = board[year]["SC"]
+}
+
 document.addEventListener('keydown', (event) => {
-    var name = event.key;
+    var name = event.key.toUpperCase();
     // Alert the key name and key code on keydown
-    valid = ["m", "h", "s", "c"];
+    valid = ["M", "H", "S", "C"];
     if (valid.includes(name)) {
         setAction(name);
     }
     else if (name == "Escape") {
         isSelected = false;
-        setAction("m");
+        setAction("M");
     }
 }, false);
 

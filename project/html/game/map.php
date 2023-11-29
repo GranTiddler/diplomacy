@@ -26,6 +26,11 @@
     .territory:hover {
         fill-opacity: 0.3;
     }
+
+    .sel {
+        fill-opacity: 0.3;
+        
+    }
 </style>
 
 <svg id="map" height="90%" version="1.1" width="99%" xmlns="http://www.w3.org/2000/svg"
@@ -45,16 +50,11 @@
 <a id="move_display"></a>
 
 <script>
-    var json
-    fetch('./map.json')
-        .then((response) => response.json())
-        .then((res) => {
-            createButtons(res)
-            createGraphics(res)
-            json = res;
-        });
+    getBoard(1,'S')
 
+    createButtons(json)
+    createGraphics(json)
+    updateDisplay()
 </script>
 
 </html>
-
