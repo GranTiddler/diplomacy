@@ -151,6 +151,7 @@ function createButtons(json) {
 
 
     var mapElement = document.getElementById('buttonLayer');
+    mapElement.innerHTML = "";
 
 
 
@@ -195,11 +196,16 @@ function createButtons(json) {
 }
 
 function createGraphics(json) {
+    document.getElementById('map');
+
     map_json = json["map"]
     game = json["game"]
 
     var mapElement = document.getElementById('mapLayer');
     var textLayer = document.getElementById('textLayer');
+
+    mapElement.innerHTML = ""
+    textLayer.innerHTML = ""
 
     for (var key in map_json) {
 
