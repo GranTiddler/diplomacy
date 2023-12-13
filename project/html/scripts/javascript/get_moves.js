@@ -20,19 +20,17 @@ var target2;
 
 var json;
 
-
-
-
 function territoryClick(id) {
     if (isSelected) {
 
         // move actions
         if (action == "M") {
 
+            window.isSelected = false;
             // hold
             if (id == selected) {
                 window.moves[selected] = { "action": "H" };
-                updateDisplay()
+
 
 
 
@@ -42,30 +40,29 @@ function territoryClick(id) {
                 window.target = id;
 
                 window.moves[selected] = { "action": action, "move": target };
-                updateDisplay()
+
 
 
 
             }
-            window.isSelected = false;
         }
         else { //support or convoy actions
             if (targetSelected) { //if the supported/convoyed piece is selected
-                window.target2 = id;
                 window.targetSelected = false;
+                window.isSelected = false;
+                window.target2 = id;
 
                 window.moves[selected] = { "action": action, "move": [target, target2] };
-                updateDisplay()
 
 
 
                 window.action = "M";
-                window.isSelected = false;
 
             }
             else {
-                if (selected == id || !units[id]) { 
-                    return;
+                if (selected == id || !units[id]) {
+                updateDisplay()
+                return;
                 }
                 window.target = id;
                 window.targetSelected = true;
@@ -79,6 +76,7 @@ function territoryClick(id) {
         window.selected = id;
 
     }
+    updateDisplay()
     setCoastVisibility()
 
 }
@@ -107,6 +105,9 @@ function setAction(action) {
 }
 
 function updateDisplay() {
+
+    selectedColor()
+    targetColor()
 
     drawOrders(json, moves)
 
@@ -252,7 +253,7 @@ function createGraphics(json) {
         el.setAttribute('d', map_json[key]['d'])
         el.setAttribute('stroke-width', '1')
         el.setAttribute('transform', 'matrix(1,0,0,1,0,0)')
-        el.setAttribute('id', key)
+
 
         mapElement.appendChild(el)
 
@@ -341,7 +342,6 @@ function createGraphics(json) {
             el.setAttribute('stroke', '#000')
             el.setAttribute('stroke-width', '1')
 
-            el.setAttribute('id', key)
             mapElement.appendChild(el)
 
 
@@ -676,13 +676,36 @@ function drawOrders(json, moves) {
     }
 }
 
-function getBoard(year, season)
-{
-    
+function getBoard(year, season) {
+
     moves = board[year][season]["M"]
-    if(moves == []){moves={}}
+    if (moves == []) { moves = {} }
     units = board[year][season]["U"]
     centerOwners = board[year]["SC"]
+}
+
+function selectedColor() {
+    if (isSelected) {
+        document.getElementById(selected).setAttribute('opacity', 0.3);
+        document.getElementById(selected).setAttribute('class', "");
+        document.getElementById(selected).setAttribute('fill', '#fa481c');
+    }
+    else if(selected) {
+        document.getElementById(selected).setAttribute('class', "territory");
+        document.getElementById(selected).setAttribute('fill', '#000');
+    }
+}
+
+function targetColor() {
+    if (targetSelected) {
+        document.getElementById(target).setAttribute('opacity', 0.1);
+        document.getElementById(target).setAttribute('class', "");
+        document.getElementById(target).setAttribute('fill', '#fa481c');
+    }
+    else if(target) {
+        document.getElementById(target).setAttribute('class', "territory");
+        document.getElementById(target).setAttribute('fill', '#000');
+    }
 }
 
 document.addEventListener('keydown', (event) => {
@@ -697,7 +720,4 @@ document.addEventListener('keydown', (event) => {
         setAction("M");
     }
 }, false);
-
-
-
 

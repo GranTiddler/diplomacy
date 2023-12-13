@@ -28,3 +28,4 @@ while($row =  mysqli_fetch_row($players))
 
 
 mysqli_query($conn, "INSERT INTO `gamePlayers" . $gameNumber ."` (`playerID`, `playerNAME`, `playerINGAME`) VALUES (". $_SESSION["uid"].", '".$_SESSION["username"]."', 1);");
+header('Location: game/?game='. htmlspecialchars($gameNumber));

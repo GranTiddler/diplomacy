@@ -16,7 +16,18 @@ services:
     volumes:
       - ./project/html:/var/www/html
     expose:
-      - 9000
+      - 9000  
+
+  ajudicator:
+    build: ./project/ajudicator
+    command: python main.py run -h 0.0.0.0
+    volumes:
+      - ./project/ajudicator:/usr/src/app/
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env.dev
+
 
   database:
     image: mysql

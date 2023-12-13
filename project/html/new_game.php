@@ -24,7 +24,7 @@ $name = "game1";
 $data = '{"key":"val"}';
 $players = '["player1", "player2"]';
 
-$sql = "INSERT INTO `games`(`gameNAME`, `gameDATA`, `mapID`) VALUES ('$name', '$data', '$id');";
+$sql = "INSERT INTO `games`(`gameNAME`, `gameDATA`, `mapID`, `gameSTATE`) VALUES ('$name', '$data', '$id', 'S01');";
 
 // echo $sql;
 mysqli_query($conn, $sql);

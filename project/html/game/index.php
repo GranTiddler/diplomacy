@@ -1,7 +1,5 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/header.php";
-
 
 $servername = "database";
 $dbusername = "root";
@@ -14,12 +12,20 @@ $gameNumber = htmlspecialchars($_GET["game"]);
 
 $result = mysqli_query($conn, "SELECT * FROM `games` WHERE gameID = '" . $gameNumber . "';");
 
-
 if(!mysqli_num_rows($result))
 {
-    echo "Game does not exist";
+    header('Location: /');
     exit();
 }
+
+include_once $_SERVER['DOCUMENT_ROOT'] . "/header.php";
+
+$servername = "database";
+$dbusername = "root";
+$dbpassword = "example";
+$dbname = "diplomacy";
+$conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+
 
 $country = "";
 if(isset($_SESSION["uid"])){
@@ -98,8 +104,9 @@ while($row = mysqli_fetch_row($board))
     }
 }
 
-$latestYear = (array_keys($boardlist)[sizeof(array_keys($boardlist))-1]);
-$latestSeason = array_keys($boardlist[$latestYear])[sizeof(array_keys($boardlist[$latestYear]))-1];
+$latestYear = intval(substr($game[4], 1, 2));
+$latestSeason = $game[4][0];
+$extra = $game[4][3];
 
 $controledUnits = array();
 
@@ -154,4 +161,3 @@ include_once "./map.php";
     };
 
 </script>
-<?php

@@ -29,4 +29,4 @@ foreach ($moves as $key => $value) {
 } 
 
 mysqli_query($conn, "UPDATE gameBoard".$_GET['game']." SET " . implode(", ", array_filter($toSumbit)) ." ORDER BY turnID DESC LIMIT 1");
-header('Location: ./?game='. htmlspecialchars($_GET["game"]));getElementByID("submit");
+header('Location: ./?game='. htmlspecialchars($_GET["game"]));
