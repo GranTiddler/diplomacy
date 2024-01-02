@@ -21,6 +21,7 @@ services:
   ajudicator:
     build: ./project/ajudicator
     command: python main.py run -h 0.0.0.0
+    restart: always
     volumes:
       - ./project/ajudicator:/usr/src/app/
     ports:
