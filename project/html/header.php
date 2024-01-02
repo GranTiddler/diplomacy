@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("scripts/verify-script.php");
+include_once("scripts/server/verify-script.php");
 
 ?>
 
@@ -14,7 +14,7 @@ include_once("scripts/verify-script.php");
 
         <?php
         if (isset($_SESSION["username"])) {
-            echo '<a class="login-button">' . $_SESSION["username"] . '</a>';
+            echo '<a href="/account" class="login-button">' . $_SESSION["username"] . '</a>';
         } else {
             echo '<a class="login-button" href="/login">log in</a><a class="login-button" href="/signup">sign up</a>';
         }
