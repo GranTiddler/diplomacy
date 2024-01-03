@@ -18,7 +18,22 @@ def adjudicate(boardNum):
 def getAdjudicateStatus(boardNum):
     return
 
-def attemptAdjudiate(boardNum):
+def getBoard(boardNum):
+    return
+
+def updateBoard(boardnum, board):
+    return
+
+def attemptAdjudiate(board):
+    return
+
+def getContested(board, unit, territory, force):
+    return
+
+def getForce(board, unit, target):
+    return
+
+def getValidConvoy(board, unit, target):
     return
 
 if __name__ == "__main__":
