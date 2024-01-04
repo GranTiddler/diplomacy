@@ -31,6 +31,7 @@ class Board:
 
 
     def updateBoard(self):
+        # interact with db
         return
 
     def adjudicate(self):
@@ -84,15 +85,21 @@ class Board:
     def getContested(self, unit):
         min = [0]
         max = [0]
-        territory = unit.territory
+        if unit.order != "M":
+            territory = unit.territory
+        else:
+            territory = unit.order[1]
         # return min and max force
         # if the unit passed in is supporting a move, don't count the unit being supported into
 
         for i in self.adjacencyList[territory]:
-            if not (unit.order[0] == "S" and i == unit.order[2] and self.units[i].country == unit.country) and (self.units[i].order == ["M", territory] or (self.units[i].order[0] == "C" and self.units[i].order[2] == territory and self.getValidConvoy(self.units[self.units[i].order[1]]))): 
+            if not ((unit.order[0] == "S" and (i == unit.order[2] or self.units[i].country == unit.country)) or i == unit.territory) and (self.units[i].order == ["M", territory] or (self.units[i].order[0] == "C" and self.units[i].order[2] == territory and self.getValidConvoy(self.units[self.units[i].order[1]]))): 
                 
                 force = self.getForce(self.units[i])
                 
+                if self.units[i].order == (self.units[i].order[0] == "C" and self.units[i].order[2] == territory):
+                    force = self.getForce(self.units[i].order[1])
+
                 min.append(force[0])
                 max.append(force[1])            
 
@@ -100,7 +107,27 @@ class Board:
 
     def getForce(self, unit):
         # return the force a unit has
-        return ["min", "max"]
+        force = [0,0]
+        
+        if unit.order != "M":
+            territory = unit.territory
+        else:
+            territory = unit.order[1]
+
+        order = ["S", unit.territory, territory]
+
+        if unit in self.adjacencyList[territory] or self.getValidConvoy(unit):
+
+            for i in self.adjacencyList[territory]:
+                if self.units[i].order == order and not self.units[i].failed():
+                    force[1] += 1
+                    if self.units[i].succeeded():
+                        force[0] += 1
+
+        # get if there is a valid path (adjacent or convoy)
+        # loop through units adjacent to the target 
+            # if unit is supporting and not the same 
+        return force
     
     def getValidConvoy(self, unit):
         return self.convoySearch(unit, ["C", unit.territory, unit.order[1]], [])
