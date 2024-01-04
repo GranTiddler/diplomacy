@@ -7,7 +7,7 @@ class Unit:
         self.state = "pending"
         self.type = type
         self.territory = territory
-        self.order = order
+        self.order = order # order type, target, targets target
         return
     
     def pending(self):
@@ -25,8 +25,8 @@ class Board:
         self.boardNum = boardNum
         # get board details from the db
 
-        self.adjacencyList = [] 
-        self.units = []
+        self.adjacencyList = {"Por": "Spa"} 
+        self.units = {"Por": Unit("A", "Por", ["M", "Spa"])}
 
 
     def updateBoard(self):
@@ -37,36 +37,80 @@ class Board:
         while(not complete):
             complete = True
             for i in self.units:
-                if(i.order[0] == "S"):
-                    # if cut or not adjacent set failed 
-                    # else if no pending convoy cut set succeeded
-                    pass
-                elif(i.order[0] == "M"):
-                    # if target is adjacent or has a successful convoy
-                        # if not contested set succeeded
-                        # else if force is greatest going in and no supports are pending set succeeded
-                        # else set failed
-                    # else set failed
-                    pass
-                else:
-                    # if not contested set succeeded
-                    # if there is a successful move into territory set failed
-                    pass
-
-                if(i.pending()):
+                if i.pending():
                     complete = False
+                    if(i.order[0] == "S"):
+                        opposingForce = self.getContested(i.territory)
+                        if opposingForce[0]:
+                            i.order = "H"
+
+                        elif opposingForce[1] == 0:
+                            i.state = "succeeded"
+
+                    elif(i.order[0] == "M"):
+                        if i.order[1] in self.adjacencyList[i.territory] or self.getValidConvoy(i):
+                            force = self.getForce(i)
+                            forceIn = [self.getContested(i.order[1])]
+                            if self.units[i.order[1]]:
+                                forceHold = self.getForce(self.units[i.order[1]])
+                                opposingForce = [max(forceIn[0], forceHold[0]), max(forceIn[1], forceHold[1])]
+
+                            if force[0] > opposingForce[1]:
+                                i.state = "succeeded"
+                            elif force[1] <= opposingForce[0]:
+                                i.state = "failed"
+
+                        else:
+                            i.state = "failed"
+                        # if target is adjacent or has a successful convoy
+                            # if not contested set succeeded
+                            # else if force is greatest going in and no supports are pending set succeeded
+                            # else set failed
+                        # else if no pending convoy set failed
+
+                    else:
+                        opposingForce = self.getContested(i)
+                        holdForce = self.getForce(i)
+                        if holdForce[0] > opposingForce[1]:
+                            i.state = "succeeded"
+                        elif holdForce[1] < opposingForce[0]:
+                            i.state = "failed"
+
+                    if(i.pending()):
+                        complete = False
         return
 
-    def getContested(self, unit, territory, force):
-        return
+    def getContested(self, unit):
+        min = [0]
+        max = [0]
+        territory = unit.territory
+        # return min and max force
+        # if the unit passed in is supporting a move, don't count the unit being supported into
 
-    def getForce(self, unit, target):
-        return
+        for i in self.adjacencyList[territory]:
+            if not (unit.order[0] == "S" and i == unit.order[2]) and (self.units[i].order == ["M", territory] or (self.units[i].order[0] == "C" and self.units[i].order[2] == territory and self.getValidConvoy(self.units[self.units[i].order[1]]))): 
+                
+                force = self.getForce(self.units[i])
+                if 
+                min.append(force[0])
+                max.append(force[1])            
+
+        return [max(min), max(max)]
+
+    def getForce(self, unit):
+        # return the force a unit has
+        return ["min", "max"]
     
-    def getValidConvoy(self, unit, target):
-        return
+    def getValidConvoy(self, unit):
+        return self.convoySearch(unit, ["C", unit.territory, unit.order[1]], [])
     
-    def attemptAdjudiate(self):
+    def convoySearch(self, unit, order, visited): # DFS
+        # add to visited list
+        # loop through adjacent as newUnit
+            # if adjacent isn't in visited and unit has the correct order
+                # call convoySearch with newUnit, order, and visited
+                # if convoySerach returns true return true
+        # return false
         return
 
 def schedule(boardNum):
@@ -84,5 +128,6 @@ def home():
     return "AAAAAAA"
 
 if __name__ == "__main__":
+    print("GAS")
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
