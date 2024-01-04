@@ -3,11 +3,12 @@ import os
 import mysql.connector
 
 class Unit:
-    def __init__(self, type, territory, order):
+    def __init__(self, type, territory, order, country):
         self.state = "pending"
         self.type = type
         self.territory = territory
         self.order = order # order type, target, targets target
+        self.country = country
         return
     
     def pending(self):
@@ -88,10 +89,10 @@ class Board:
         # if the unit passed in is supporting a move, don't count the unit being supported into
 
         for i in self.adjacencyList[territory]:
-            if not (unit.order[0] == "S" and i == unit.order[2]) and (self.units[i].order == ["M", territory] or (self.units[i].order[0] == "C" and self.units[i].order[2] == territory and self.getValidConvoy(self.units[self.units[i].order[1]]))): 
+            if not (unit.order[0] == "S" and i == unit.order[2] and self.units[i].country == unit.country) and (self.units[i].order == ["M", territory] or (self.units[i].order[0] == "C" and self.units[i].order[2] == territory and self.getValidConvoy(self.units[self.units[i].order[1]]))): 
                 
                 force = self.getForce(self.units[i])
-                if 
+                
                 min.append(force[0])
                 max.append(force[1])            
 
