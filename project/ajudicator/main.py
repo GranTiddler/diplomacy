@@ -130,16 +130,21 @@ class Board:
         return force
     
     def getValidConvoy(self, unit):
-        return self.convoySearch(unit, ["C", unit.territory, unit.order[1]], [])
+        return self.convoySearch(unit.territory, ["C", unit.territory, unit.order[1]], [])
     
     def convoySearch(self, unit, order, visited): # DFS
         # add to visited list
+        visited.append(unit)
         # loop through adjacent as newUnit
+        for i in self.adjacencyList[unit]:
             # if adjacent isn't in visited and unit has the correct order
+            if (not i in visited) and self.units[i].order == order:
                 # call convoySearch with newUnit, order, and visited
-                # if convoySerach returns true return true
+                if self.convoySearch(i, order, visited) or i == order[2]:
+                    # if convoySerach returns true return true  
+                    return True
         # return false
-        return
+        return False
 
 def schedule(boardNum):
     return
