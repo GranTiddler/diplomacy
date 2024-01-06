@@ -1,6 +1,7 @@
 from flask import Flask
 import os
 import mysql.connector
+import threading
 
 class Unit:
     def __init__(self, type, territory, order, country):
@@ -26,13 +27,8 @@ class Board:
         self.boardNum = boardNum
         # get board details from the db
 
-        self.adjacencyList = {"Por": "Spa"} 
-        self.units = {"Por": Unit("A", "Por", ["M", "Spa"])}
+        # if a player has won schedule.CancelJob
 
-
-    def updateBoard(self):
-        # interact with db
-        return
 
     def adjudicate(self):
         complete = False
@@ -52,8 +48,9 @@ class Board:
                     elif(i.order[0] == "M"):
                         if i.order[1] in self.adjacencyList[i.territory] or self.getValidConvoy(i):
                             force = self.getForce(i)
-                            forceIn = [self.getContested(i.order[1])]
-                            if self.units[i.order[1]]:
+                            forceIn = [self.getContested(self.units[i.order[1]])]
+                            opposingForce = forceIn
+                            if self.units[i.order[1]] and self.units[i.order[1]].order in [["M", i.territory], ["H"]]:
                                 forceHold = self.getForce(self.units[i.order[1]])
                                 opposingForce = [max(forceIn[0], forceHold[0]), max(forceIn[1], forceHold[1])]
 
@@ -78,8 +75,6 @@ class Board:
                         elif holdForce[1] < opposingForce[0]:
                             i.state = "failed"
 
-                    if(i.pending()):
-                        complete = False
         return
 
     def getContested(self, unit):
@@ -107,26 +102,28 @@ class Board:
 
     def getForce(self, unit):
         # return the force a unit has
-        force = [0,0]
+        force = [1,1]
         
-        if unit.order != "M":
+        if unit.order != "M": # hold, support or convoy
             territory = unit.territory
         else:
             territory = unit.order[1]
 
+        
+
         order = ["S", unit.territory, territory]
 
-        if unit in self.adjacencyList[territory] or self.getValidConvoy(unit):
+        if not unit in self.adjacencyList[territory]:
+            if self.getValidConvoy(unit):
+                force = [0,1]
+            else: 
+                return [0, 0]
 
-            for i in self.adjacencyList[territory]:
-                if self.units[i].order == order and not self.units[i].failed():
-                    force[1] += 1
-                    if self.units[i].succeeded():
-                        force[0] += 1
-
-        # get if there is a valid path (adjacent or convoy)
-        # loop through units adjacent to the target 
-            # if unit is supporting and not the same 
+        for i in self.adjacencyList[territory]:
+            if self.units[i].order == order and not self.units[i].failed():
+                force[1] += 1
+                if self.units[i].succeeded():
+                    force[0] += 1
         return force
     
     def getValidConvoy(self, unit):
@@ -152,7 +149,22 @@ def schedule(boardNum):
     return
 
 def getAdjudicateStatus(boardNum):
+    # get if all players have submitted and game should proceed
     return
+
+def adjudicateOnce(boardnum):
+    board = Board(boardnum)
+    board.adjudicate()
+    return schedule.CancelJob
+
+def adjudicateBoard(boardnum):
+    if getAdjudicateStatus() == "ready":
+        board = Board(boardnum)
+        board.adjudicate()
+    elif getAdjudicateStatus() == "grace":
+        # get grace period time and schedule adjucateOnce with that
+        pass
+
 
 
 app = Flask(__name__)
@@ -163,6 +175,10 @@ def home():
     return "AAAAAAA"
 
 if __name__ == "__main__":
-    print("GAS")
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
+
+    # get all games 
+    # loop through and start games as needed
+    
+    # loop and run scheduler

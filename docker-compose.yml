@@ -18,12 +18,12 @@ services:
     expose:
       - 9000  
 
-  ajudicator:
-    build: ./project/ajudicator
+  adjudicator:
+    build: ./project/adjudicator
     command: python main.py run -h 0.0.0.0
     restart: always
     volumes:
-      - ./project/ajudicator:/usr/src/app/
+      - ./project/adjudicator:/usr/src/app/
     ports:
       - 5000:5000
     env_file:
@@ -34,7 +34,7 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
 
