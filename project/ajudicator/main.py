@@ -147,6 +147,8 @@ class Board:
         return False
 
 def schedule(boardNum):
+    # get schedule times from sql
+    # schedule with boardnumber as argument
     return
 
 def getAdjudicateStatus(boardNum):
