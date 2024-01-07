@@ -9,7 +9,7 @@ include_once("scripts/server/verify-script.php");
 
 <body>
     <div class="nav">
-        <a class="nav-element">B A L L S</a>
+        <a class="nav-element">F I L L E R - T E X T</a>
 
 
         <?php

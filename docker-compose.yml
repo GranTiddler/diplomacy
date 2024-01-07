@@ -48,7 +48,7 @@ services:
     ports:
       - 8080:80
     env_file:
-      - ./.env.dev
+      - ./.env
 
 volumes:
   db-data:
