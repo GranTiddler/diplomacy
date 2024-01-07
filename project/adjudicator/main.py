@@ -26,7 +26,6 @@ class Board:
     def __init__(self, boardNum):
         self.boardNum = boardNum
         # get board details from the db
-
         # if a player has won schedule.CancelJob
 
 
@@ -170,9 +169,13 @@ def adjudicateBoard(boardnum):
 app = Flask(__name__)
 
 
-@app.route('/')
-def home():
-    return "AAAAAAA"
+@app.route('/update/<boardNum>')
+def home(boardNum):
+    if getAdjudicateStatus(boardNum) == "ready":
+        board = Board(boardNum)
+        board.adjudicate()
+        return "success"
+    return "waiting"
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))

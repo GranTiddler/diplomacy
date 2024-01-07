@@ -8,6 +8,8 @@ services:
     volumes:
       - ./project/html:/var/www/html
       - ./project/nginx/conf:/etc/nginx
+    env_file:
+      - ./.env
 
   php:
     build: ./project/php
@@ -17,6 +19,8 @@ services:
       - ./project/html:/var/www/html
     expose:
       - 9000  
+    env_file:
+      - ./.env
 
   adjudicator:
     build: ./project/adjudicator
@@ -27,24 +31,24 @@ services:
     ports:
       - 5000:5000
     env_file:
-      - ./.env.dev
+      - ./.env
 
 
   database:
     image: mysql
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
+    env_file:
+      - ./.env
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
       - 8080:80
-    environment:
-      - PMA_ARBITRARY=1
+    env_file:
+      - ./.env.dev
 
 volumes:
   db-data:

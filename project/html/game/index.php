@@ -3,7 +3,7 @@
 
 $servername = "database";
 $dbusername = "root";
-$dbpassword = "example";
+$dbpassword = $_ENV["MYSQL_ROOT_PASSWORD"];
 $dbname = "diplomacy";
 
 $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
